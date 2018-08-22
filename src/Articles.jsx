@@ -2,50 +2,70 @@ import React, { Component } from 'react';
 import './App.css';
 import { Image, Icon, Header, Grid } from 'semantic-ui-react';
 
-class Posts extends Component {
+class Articles extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      votesAdded: [0, 0, 0, 0]
+      postMod: '',
+      posts: this.props.posts
     }
+    this.sortPosts = this.sortPosts.bind(this);
+  }
+
+  componentDidMount() {
+    this.sortPosts('desc');
   }
 
   voteUp(e) {
-    console.log('Id del post: ', e);
-    this.setState({
-      votesAdded: this.state.votesAdded.map((vote, i) =>
-        e === i ? vote + 1 : vote
-      )
+    this.setState({postMod: this.state.posts[e]}, () => {
+      this.updateVotes(e, 'inc');
     });
-    console.log('Votos: ', this.state.votesAdded[e]);
   }
 
   voteDown(e) {
-    console.log('Id del post: ', e);
-    this.setState({
-      votesAdded: this.state.votesAdded.map((vote, i) =>
-        e === i ? vote - 1 : vote
-      )
+    this.setState({postMod: this.state.posts[e]}, () => {
+      this.updateVotes(e, '');
     });
-    console.log('Votos: ', this.state.votesAdded[e]);
+  }
+
+  updateVotes(index, type) {
+    this.setState(prevState => ({
+      postMod: {
+          ...prevState.postMod,
+          votes: type === 'inc' ? prevState.postMod.votes + 1 : prevState.postMod.votes - 1
+      }
+    }), () => {
+      this.setState({
+        posts: [
+          ...this.state.posts.slice(0, index),
+          this.state.postMod,
+          ...this.state.posts.slice(index + 1)
+        ]
+      }, () => {
+        this.sortPosts('desc');
+      })
+    });
+  }
+
+  sortPosts(type) {
+    this.setState({posts: type === 'desc' ? [...this.state.posts].sort((a, b) => a.votes < b.votes) : [...this.state.posts].sort((a, b) => a.votes > b.votes)})
   }
 
   render() {
-    console.log('Posts props', this.props);
-
     const { posts } = this.props;
+
     return (
       <div>
-        {posts.map((post, i) => {
+        {this.state.posts.map((post, i) => {
           return (
             <Grid centered columns={3} key={post.id} >
               <Grid.Column width={6} className="post">
                 <Image src={post.post_image_url} size='large' />
               </Grid.Column>
               <Grid.Column textAlign='center' width={2} className="post" verticalAlign="middle">
-                <Icon name='angle up' onClick={() => this.voteUp(post.id - 1)}/>
-                <Header as='h3'>{post.votes + this.state.votesAdded[post.id - 1]}</Header>
-                <Icon name='angle down' onClick={() => this.voteDown(post.id - 1)}/>
+                <Icon name='angle up' onClick={() => this.voteUp(i)}/>
+                <Header as='h3'>{post.votes}</Header>
+                <Icon name='angle down' onClick={() => this.voteDown(i)}/>
               </Grid.Column>
               <Grid.Column width={8} className="post">
                 <a href={post.url} target='_blank' rel="noopener noreferrer">
@@ -64,4 +84,4 @@ class Posts extends Component {
   }
 }
 
-export default Posts;
+export default Articles;
