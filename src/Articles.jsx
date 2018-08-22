@@ -17,6 +17,12 @@ class Articles extends Component {
     this.sortPosts(this.state.sorting);
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({sorting: nextProps.sorting}, () => {
+      this.sortPosts(this.state.sorting);
+    })
+  }
+
   voteUp(e) {
     this.setState({postMod: this.state.posts[e]}, () => {
       this.updateVotes(e, 'inc');
@@ -53,8 +59,6 @@ class Articles extends Component {
   }
 
   render() {
-    const { posts } = this.props;
-
     return (
       <div>
         {this.state.posts.map((post, i) => {
