@@ -9,8 +9,16 @@ class App extends Component {
     super();
     this.state = {
       posts: posts,
-      sortAsc: true
+      sortAsc: false
     };
+  }
+
+  handleClick() {
+    this.setState({
+      sortAsc: !this.state.sortAsc
+    }, () => {
+      console.log('Orden ascendente: ', this.state.sortAsc);
+    })
   }
 
   render() {
@@ -26,8 +34,8 @@ class App extends Component {
           <Header as='h3'>
             Orden:
           </Header>
-          <Button color='blue'>Ascendente</Button>
-          <Button content='Descendente' primary basic />
+          <Button color='blue' onClick={() => this.handleClick()} className={!this.state.sortAsc ? "basic" : null}>Ascendente</Button>
+          <Button color='blue' onClick={() => this.handleClick()} className={this.state.sortAsc ? "basic" : null}>Descendente</Button>
         </div>
 
         <Articles posts={this.state.posts} sorting={this.state.sortAsc}/>
