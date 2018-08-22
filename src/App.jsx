@@ -8,7 +8,8 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      posts: posts
+      posts: posts,
+      sortAsc: true
     };
   }
 
@@ -25,11 +26,11 @@ class App extends Component {
           <Header as='h3'>
             Orden:
           </Header>
-          <Button basic color='blue'>Ascendente</Button>
-          <Button content='Descendente' primary />
+          <Button color='blue'>Ascendente</Button>
+          <Button content='Descendente' primary basic />
         </div>
 
-        <Articles posts={this.state.posts} />
+        <Articles posts={this.state.posts} sorting={this.state.sortAsc}/>
 
       </Container>
     );

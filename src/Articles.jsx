@@ -7,13 +7,14 @@ class Articles extends Component {
     super(props);
     this.state = {
       postMod: '',
-      posts: this.props.posts
+      posts: this.props.posts,
+      sorting: this.props.sorting
     }
     this.sortPosts = this.sortPosts.bind(this);
   }
 
   componentDidMount() {
-    this.sortPosts('desc');
+    this.sortPosts(this.state.sorting);
   }
 
   voteUp(e) {
@@ -42,13 +43,13 @@ class Articles extends Component {
           ...this.state.posts.slice(index + 1)
         ]
       }, () => {
-        this.sortPosts('desc');
+        this.sortPosts(this.state.sorting);
       })
     });
   }
 
   sortPosts(type) {
-    this.setState({posts: type === 'desc' ? [...this.state.posts].sort((a, b) => a.votes < b.votes) : [...this.state.posts].sort((a, b) => a.votes > b.votes)})
+    this.setState({posts: type ? [...this.state.posts].sort((a, b) => a.votes > b.votes) : [...this.state.posts].sort((a, b) => a.votes < b.votes)})
   }
 
   render() {
